@@ -42,6 +42,8 @@ namespace FileScanner.ViewModels
         {
             OpenFolderCommand = new DelegateCommand<string>(OpenFolder);
             ScanFolderCommand = new DelegateCommand<string>(ScanFolder, CanExecuteScanFolder);
+
+            SelectedFolder = "C:\\Users\\douce\\Desktop\\Autre";
         }
 
         private bool CanExecuteScanFolder(string obj)
@@ -62,11 +64,65 @@ namespace FileScanner.ViewModels
 
         private void ScanFolder(string dir)
         {
-            FolderItems = new ObservableCollection<string>(GetDirs(dir));
             
+            FolderItems = new ObservableCollection<string>();
+            /*
             foreach (var item in Directory.EnumerateFiles(dir, "*"))
             {
                 FolderItems.Add(item);
+            }
+            */
+
+            DirectoryInfo myRoot = new DirectoryInfo(dir);
+            string[] myDir = Directory.GetDirectories(dir);
+
+                
+            recursiveLoop(myDir);
+            addFile(myRoot);
+
+        }
+
+        private void addFile(DirectoryInfo myDir)
+        {
+            string myPath = "";
+
+            foreach (FileInfo file in myDir.GetFiles())
+            {
+                myPath = file.ToString();
+
+                folderItems.Add(myPath);
+
+            }
+        }
+
+        private void recursiveLoop(string[] subdir)
+        {
+            foreach (string s in subdir)
+            {
+                folderItems.Add(s);
+
+                try
+                {
+                    string[] myDir = Directory.GetDirectories(s);
+                    recursiveLoop(myDir);
+
+                    DirectoryInfo mySub = new DirectoryInfo(s);
+
+                    string myPath = "";
+
+                    foreach (FileInfo file in mySub.GetFiles())
+                    {
+                        myPath = file.ToString();
+
+                        folderItems.Add(myPath);
+
+                    }
+
+                }
+                catch (Exception c)
+                {
+                        Console.WriteLine("Error: " + c.Message);
+                }
             }
         }
 
