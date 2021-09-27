@@ -77,7 +77,6 @@ namespace FileScanner.ViewModels
             addFile(myRoot);
             
             System.Windows.MessageBox.Show("" + FolderItems.Count);
-
         }
 
         private void addFile(DirectoryInfo myDir)
