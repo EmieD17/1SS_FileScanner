@@ -23,9 +23,8 @@ namespace FileScanner
     {
         public MainWindow()
         {
-            InitializeComponent();
-
-            this.DataContext = new MainViewModel();
+            DataContext = new MainViewModel();
+            InitializeComponent();   
         }
     }
 }

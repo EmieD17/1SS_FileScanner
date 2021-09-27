@@ -7,4 +7,14 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Views\file.png" />
+    <None Remove="Views\folder.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\file.png" />
+    <Resource Include="Views\folder.jpg" />
+  </ItemGroup>
+
 </Project>

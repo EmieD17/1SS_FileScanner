@@ -1,4 +1,5 @@
 ﻿using FileScanner.Commands;
+using FileScanner.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,18 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 
 namespace FileScanner.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        private string fileImagePath = "/Views/file.png";
+        private string folderImagePath = "/Views/folder.jpg";
         private string selectedFolder;
-        private ObservableCollection<string> folderItems = new ObservableCollection<string>();
+        private ObservableCollection<FolderItem> folderItems = new ObservableCollection<FolderItem>();
          
         public DelegateCommand<string> OpenFolderCommand { get; private set; }
         public DelegateCommand<string> ScanFolderCommand { get; private set; }
 
-        public ObservableCollection<string> FolderItems { 
+        public ObservableCollection<FolderItem> FolderItems { 
             get => folderItems;
             set 
             { 
@@ -43,7 +47,7 @@ namespace FileScanner.ViewModels
             OpenFolderCommand = new DelegateCommand<string>(OpenFolder);
             ScanFolderCommand = new DelegateCommand<string>(ScanFolder, CanExecuteScanFolder);
 
-            SelectedFolder = "C:\\Users\\douce\\Desktop\\Autre";
+            //SelectedFolder = "C:\\Users\\douce\\Desktop\\Autre";
         }
 
         private bool CanExecuteScanFolder(string obj)
@@ -65,21 +69,14 @@ namespace FileScanner.ViewModels
         private void ScanFolder(string dir)
         {
             
-            FolderItems = new ObservableCollection<string>();
-            /*
-            foreach (var item in Directory.EnumerateFiles(dir, "*"))
-            {
-                FolderItems.Add(item);
-            }
-            */
+            FolderItems = new ObservableCollection<FolderItem>();
+
 
             DirectoryInfo myRoot = new DirectoryInfo(dir);
             string[] myDir = Directory.GetDirectories(dir);
 
-                
             recursiveLoop(myDir);
             addFile(myRoot);
-
         }
 
         private void addFile(DirectoryInfo myDir)
@@ -90,8 +87,7 @@ namespace FileScanner.ViewModels
             {
                 myPath = file.ToString();
 
-                folderItems.Add(myPath);
-
+                folderItems.Add(new FolderItem(myPath, fileImagePath));
             }
         }
 
@@ -99,7 +95,7 @@ namespace FileScanner.ViewModels
         {
             foreach (string s in subdir)
             {
-                folderItems.Add(s);
+                folderItems.Add(new FolderItem(s, folderImagePath)); // Folder HERE
 
                 try
                 {
@@ -114,7 +110,7 @@ namespace FileScanner.ViewModels
                     {
                         myPath = file.ToString();
 
-                        folderItems.Add(myPath);
+                        folderItems.Add(new FolderItem(myPath, fileImagePath));
 
                     }
 

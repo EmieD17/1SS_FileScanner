@@ -4,14 +4,14 @@ using System.Text;
 
 namespace FileScanner.Models
 {
-    class FolderItem
+    public class FolderItem
     {
         public string TheItemDir { get; set; }
         public string TheImage { get; set; }
-        public FolderItem(string theItemDir, string theimage)
+        public FolderItem(string theItemDir, string theImage)
         {
             TheItemDir = theItemDir;
-            TheImage = theimage;
+            TheImage = theImage;
         }
     }
 }
