@@ -18,14 +18,15 @@ namespace FileScanner.ViewModels
         private string folderImagePath = "/Views/folder.jpg";
         private string selectedFolder;
         private ObservableCollection<FolderItem> folderItems = new ObservableCollection<FolderItem>();
-         
+
         public DelegateCommand<string> OpenFolderCommand { get; private set; }
         public DelegateCommand<string> ScanFolderCommand { get; private set; }
 
-        public ObservableCollection<FolderItem> FolderItems { 
+        public ObservableCollection<FolderItem> FolderItems
+        {
             get => folderItems;
-            set 
-            { 
+            set
+            {
                 folderItems = value;
                 OnPropertyChanged();
             }
@@ -47,7 +48,7 @@ namespace FileScanner.ViewModels
             OpenFolderCommand = new DelegateCommand<string>(OpenFolder);
             ScanFolderCommand = new DelegateCommand<string>(ScanFolder, CanExecuteScanFolder);
 
-            //SelectedFolder = "C:\\Users\\douce\\Desktop\\Autre";
+            //SelectedFolder = "C:\\Users\\douce\\Desktop";
         }
 
         private bool CanExecuteScanFolder(string obj)
@@ -66,17 +67,17 @@ namespace FileScanner.ViewModels
             }
         }
 
-        private void ScanFolder(string dir)
+        private async void ScanFolder(string dir)
         {
-            
             FolderItems = new ObservableCollection<FolderItem>();
-
-
             DirectoryInfo myRoot = new DirectoryInfo(dir);
             string[] myDir = Directory.GetDirectories(dir);
 
-            recursiveLoop(myDir);
+            await recursiveLoop(myDir);
             addFile(myRoot);
+            
+            System.Windows.MessageBox.Show("" + FolderItems.Count);
+
         }
 
         private void addFile(DirectoryInfo myDir)
@@ -85,22 +86,29 @@ namespace FileScanner.ViewModels
 
             foreach (FileInfo file in myDir.GetFiles())
             {
-                myPath = file.ToString();
+                try
+                {
+                    myPath = file.ToString();
 
-                folderItems.Add(new FolderItem(myPath, fileImagePath));
+                    folderItems.Add(new FolderItem(myPath, fileImagePath));
+                }
+                catch(Exception c)
+                {
+                    Console.WriteLine("Error: " + c.Message);
+                }
             }
         }
 
-        private void recursiveLoop(string[] subdir)
+        private async Task recursiveLoop(string[] subdir)
         {
             foreach (string s in subdir)
             {
-                folderItems.Add(new FolderItem(s, folderImagePath)); // Folder HERE
-
                 try
                 {
+                    folderItems.Add(new FolderItem(s, folderImagePath)); // Folder HERE
+
                     string[] myDir = Directory.GetDirectories(s);
-                    recursiveLoop(myDir);
+                    await recursiveLoop(myDir);
 
                     DirectoryInfo mySub = new DirectoryInfo(s);
 
@@ -108,22 +116,27 @@ namespace FileScanner.ViewModels
 
                     foreach (FileInfo file in mySub.GetFiles())
                     {
-                        myPath = file.ToString();
+                        try
+                        {
+                            myPath = file.ToString();
 
-                        folderItems.Add(new FolderItem(myPath, fileImagePath));
-
+                            folderItems.Add(new FolderItem(myPath, fileImagePath));
+                        }
+                        catch (Exception c)
+                        {
+                            Console.WriteLine("Error: " + c.Message);
+                        }
                     }
-
                 }
                 catch (Exception c)
                 {
-                        Console.WriteLine("Error: " + c.Message);
+                    Console.WriteLine("Error: " + c.Message);
                 }
             }
         }
 
         IEnumerable<string> GetDirs(string dir)
-        {            
+        {
             foreach (var d in Directory.EnumerateDirectories(dir, "*"))
             {
                 yield return d;
@@ -133,7 +146,6 @@ namespace FileScanner.ViewModels
         ///TODO : Tester avec un dossier avec beaucoup de fichier
         ///TODO : Rendre l'application asynchrone
         ///TODO : Ajouter un try/catch pour les dossiers sans permission
-
 
     }
 }

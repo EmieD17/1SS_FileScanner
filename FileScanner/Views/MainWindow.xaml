@@ -14,15 +14,16 @@
                 <MenuItem Header="_Open folder..." Command="{Binding OpenFolderCommand}"/>
             </MenuItem>
         </Menu>
+        
         <ToolBar DockPanel.Dock="Top">
             <Button Content="Scan" Command="{Binding ScanFolderCommand}" CommandParameter="{Binding SelectedFolder}" />
-
-
         </ToolBar>
+        
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock Text="Selected folder : "/>
             <TextBlock Text="{Binding SelectedFolder}"/>
         </StatusBar>
+        
         <Grid>
             <ListBox ItemsSource="{Binding FolderItems}">
                 <ListBox.ItemTemplate>
